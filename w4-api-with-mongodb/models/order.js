@@ -4,21 +4,36 @@ const mongoose = require('mongoose');
 const orderSchema = mongoose.Schema({
     status: {
         type: String,
-        required: true,
+      enum: ['created', 'canceled'],
+      default: 'created'
     },
     createAt: {
         type: Date,
-        default: new Date().toISOString()
+        default: Date.now
+    },
+    total: {
+        type: Number,
+        required: [true, 'Please add a total price'],
+        min: [0, 'Please add a valid total price, value is {VALUE}, min 0 USD']
     },
     owner: {
         type: mongoose.Types.ObjectId,
-        ref: 'User'
-    },items: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Item'
-    }],
-    total:Number
-    
+        ref: 'User',
+        required: [true, 'Please add a client user']
+    },
+    purchases: [
+        {
+          item: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Item',
+            required: [true, 'Please add an item']
+          },
+          quantity: {
+            type: Number,
+            required: [true, 'Please add a quantity']
+          }
+        }
+      ]
     
 
 })

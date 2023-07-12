@@ -3,18 +3,29 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     username: {
         type: String,
-        required: true,
-        minLength: 6
+        required: [true, 'Please add a username']
     },
-    fullname: {type: String, required: true},
-    password: {type: String, required: true},
-    mail: {type: String, required: true},
-    role: {type: String, required: true},
+    password: {type: String, required: [true, 'Please add a password'],
+    minlength: 6,
+    select: false
+    },
+    mail: {type: String,
+        required: [true, 'Please add an email'],
+        unique: true,
+        match: [
+          // eslint-disable-next-line no-useless-escape
+          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+          'Please add a valid email'
+    ]},
+    role: {type: String,
+        enum: ['admin', 'owner', 'client'],
+        default: 'client'},
     joinedAt: {
         type: Date,
-        default: new Date().toISOString()
+        default: Date.now
     },
-    isActive:Boolean
+    isActive:{type: Boolean,
+        default: true}
 })
 
 const User = mongoose.model('User', userSchema)
